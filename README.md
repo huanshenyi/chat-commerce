@@ -56,10 +56,10 @@ pnpm cdk deploy -c environment=dev dev-chat-commerce-ecr-stack
 ```bash
 # プロジェクトルートで実行
 export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
-export REPOSITORY_NAME=icasu-ecs-fargate-sample-app
+export REPOSITORY_NAME=chat-commerce-app
 export REGISTRY_NAME=$AWS_ACCOUNT_ID.dkr.ecr.ap-northeast-1.amazonaws.com
 export COMMIT_HASH=$(git rev-parse --short HEAD)
-docker build \
+docker buildx build \
   --platform=linux/x86_64 \
   -t $COMMIT_HASH \
   -f Dockerfile.server .
@@ -74,11 +74,10 @@ docker push "$AWS_ACCOUNT_ID.dkr.ecr.ap-northeast-1.amazonaws.com/$REPOSITORY_NA
 #### ECS 関連リソースのデプロイ
 
 ```bash
-cd ./packages/iac
 pnpm cdk deploy \
   -c environment=dev \
   -c imageTag=$COMMIT_HASH \
-  dev-icasu-ecs-fargate-infra-stack
+  dev-chat-commerce-infra-stack
 ```
 
 ## Useful commands
