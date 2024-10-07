@@ -1,15 +1,15 @@
 #!/usr/bin/env node
-import 'source-map-support/register';
-import * as cdk from 'aws-cdk-lib';
-import { EcrStack } from '../lib/ecr-stack';
-import { DeployRoleStack } from '../lib/deploy-role-stack';
-import { getAppParameters } from './parameter';
+import 'source-map-support/register'
+import * as cdk from 'aws-cdk-lib'
+import { DeployRoleStack } from '../lib/deploy-role-stack'
+import { EcrStack } from '../lib/ecr-stack'
+import { getAppParameters } from './parameter'
 
-const app = new cdk.App();
+const app = new cdk.App()
 
-const argContext = 'environment';
-const envKey = app.node.tryGetContext(argContext);
-const appParameter = getAppParameters(envKey);
+const argContext = 'environment'
+const envKey = app.node.tryGetContext(argContext)
+const appParameter = getAppParameters(envKey)
 
 /**
  * Build Container Image
@@ -17,24 +17,24 @@ const appParameter = getAppParameters(envKey);
  */
 const imageTag = app.node.tryGetContext('imageTag')
   ? app.node.tryGetContext('imageTag')
-  : appParameter.imageTag;
+  : appParameter.imageTag
 
-  new DeployRoleStack(
-    app,
-    `${appParameter.envName}-${appParameter.projectName}-deploy-role-stack`,
-    {
-      projectName: appParameter.projectName,
-      gitHubOwner: appParameter.github.owner,
-      gitHubRepo: appParameter.github.repo,
-    }
-  );
+new DeployRoleStack(
+  app,
+  `${appParameter.envName}-${appParameter.projectName}-deploy-role-stack`,
+  {
+    projectName: appParameter.projectName,
+    gitHubOwner: appParameter.github.owner,
+    gitHubRepo: appParameter.github.repo,
+  },
+)
 
-  new EcrStack(
-    app,
-    `${appParameter.envName}-${appParameter.projectName}-ecr-stack`,
-    {
-      repositoryName: appParameter.repositoryName,
-      envName: appParameter.envName,
-      projectName: appParameter.projectName,
-    }
-  );
+new EcrStack(
+  app,
+  `${appParameter.envName}-${appParameter.projectName}-ecr-stack`,
+  {
+    repositoryName: appParameter.repositoryName,
+    envName: appParameter.envName,
+    projectName: appParameter.projectName,
+  },
+)

@@ -1,23 +1,23 @@
-import * as cdk from 'aws-cdk-lib';
-import * as iam from 'aws-cdk-lib/aws-iam';
-import type { Construct } from 'constructs';
+import * as cdk from 'aws-cdk-lib'
+import * as iam from 'aws-cdk-lib/aws-iam'
+import type { Construct } from 'constructs'
 
 interface Props extends cdk.StackProps {
-  projectName: string;
-  gitHubOwner: string;
-  gitHubRepo: string;
+  projectName: string
+  gitHubOwner: string
+  gitHubRepo: string
 }
 
 export class DeployRoleStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: Props) {
-    super(scope, id, props);
+    super(scope, id, props)
 
-    const accountId = cdk.Stack.of(this).account;
+    const accountId = cdk.Stack.of(this).account
     const oidcProvider = iam.Role.fromRoleArn(
       this,
       'Role',
-      `arn:aws:iam::${accountId}:oidc-provider/token.actions.githubusercontent.com`
-    );
+      `arn:aws:iam::${accountId}:oidc-provider/token.actions.githubusercontent.com`,
+    )
 
     new iam.Role(this, `${id}-AssumeRole`, {
       roleName: `${props.projectName}-assume-role`,
@@ -28,11 +28,11 @@ export class DeployRoleStack extends cdk.Stack {
             'token.actions.githubusercontent.com:sub': `repo:${props.gitHubOwner}/${props.gitHubRepo}:*`,
           },
         },
-        'sts:AssumeRoleWithWebIdentity'
+        'sts:AssumeRoleWithWebIdentity',
       ),
       managedPolicies: [
         iam.ManagedPolicy.fromAwsManagedPolicyName(
-          'AWSCloudFormationFullAccess'
+          'AWSCloudFormationFullAccess',
         ),
         iam.ManagedPolicy.fromAwsManagedPolicyName('IAMFullAccess'),
         iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess'),
@@ -60,11 +60,11 @@ export class DeployRoleStack extends cdk.Stack {
                 'ec2:Describe*',
                 'ec2:Get*',
               ],
-              resources: [`*`],
+              resources: ['*'],
             }),
           ],
         }),
       },
-    });
+    })
   }
 }
