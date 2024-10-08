@@ -15,7 +15,7 @@ export interface AppParameter {
   envName: EnvName
   env: Environment // デプロイ先の AWS アカウント ID および AWS リージョン
   vpcCidr: string
-  vpcIdSsmParamName: string
+  // vpcIdSsmParamName: string　// 今は使わない
   imageTag: string
   repositoryName: string
   certificateArn: string
@@ -23,9 +23,9 @@ export interface AppParameter {
   taskMemory: number
   containerCpu: number
   containerMemory: number
-  domainPrefix: string
-  callbackUrls: string[]
-  logoutUrls: string[]
+  // domainPrefix: string // cognito今使わない
+  // callbackUrls: string[]
+  // logoutUrls: string[]
 }
 
 const commonParameters = {
@@ -45,7 +45,7 @@ const appParameters: { [key in EnvName]: AppParameter } = {
       region: region,
     },
     vpcCidr: '10.100.0.0/16',
-    vpcIdSsmParamName: '/XXX/VpcId',
+    // vpcIdSsmParamName: '/XXX/VpcId',
     imageTag: 'DUMMY',
     repositoryName: 'chat-commerce-app',
     certificateArn: 'TBD',
@@ -53,9 +53,9 @@ const appParameters: { [key in EnvName]: AppParameter } = {
     taskMemory: 512,
     containerCpu: 256,
     containerMemory: 512,
-    domainPrefix: 'chat-commerce-app',
-    callbackUrls: ['https://classmethod.jp/'],
-    logoutUrls: ['https://classmethod.jp/'],
+    // domainPrefix: 'chat-commerce-app',
+    // callbackUrls: ['https://classmethod.jp/'],
+    // logoutUrls: ['https://classmethod.jp/'],
   },
   stg: {
     ...commonParameters,
@@ -65,7 +65,7 @@ const appParameters: { [key in EnvName]: AppParameter } = {
       region: region,
     },
     vpcCidr: '10.100.0.0/16',
-    vpcIdSsmParamName: '/XXX/VpcId',
+    // vpcIdSsmParamName: '/XXX/VpcId',
     imageTag: 'DUMMY',
     repositoryName: 'chat-commerce-app',
     certificateArn: 'TBD',
@@ -73,9 +73,9 @@ const appParameters: { [key in EnvName]: AppParameter } = {
     taskMemory: 512,
     containerCpu: 256,
     containerMemory: 512,
-    domainPrefix: 'stg-cx-sample',
-    callbackUrls: ['https://classmethod.jp/'],
-    logoutUrls: ['https://classmethod.jp/'],
+    // domainPrefix: 'stg-cx-sample',
+    // callbackUrls: ['https://classmethod.jp/'],
+    // logoutUrls: ['https://classmethod.jp/'],
   },
   prd: {
     ...commonParameters,
@@ -85,7 +85,7 @@ const appParameters: { [key in EnvName]: AppParameter } = {
       region: region,
     },
     vpcCidr: '10.100.0.0/16',
-    vpcIdSsmParamName: '/XXX/VpcId',
+    // vpcIdSsmParamName: '/XXX/VpcId',
     imageTag: 'DUMMY',
     repositoryName: 'chat-commerce-app',
     certificateArn: 'TBD',
@@ -93,9 +93,9 @@ const appParameters: { [key in EnvName]: AppParameter } = {
     taskMemory: 512,
     containerCpu: 256,
     containerMemory: 512,
-    domainPrefix: 'cx-sample',
-    callbackUrls: ['https://classmethod.jp/'],
-    logoutUrls: ['https://classmethod.jp/'],
+    // domainPrefix: 'cx-sample',
+    // callbackUrls: ['https://classmethod.jp/'],
+    // logoutUrls: ['https://classmethod.jp/'],
   },
 }
 
