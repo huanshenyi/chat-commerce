@@ -30,6 +30,7 @@ export class DynamodbConstruct extends Construct {
           type: aws_dynamodb.AttributeType.STRING,
         },
         billingMode: aws_dynamodb.BillingMode.PAY_PER_REQUEST,
+        removalPolicy: RemovalPolicy.DESTROY,  
       },
     )
     this.chatCommerceTable = chatCommerceTable
