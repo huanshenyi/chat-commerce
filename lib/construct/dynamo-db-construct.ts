@@ -24,6 +24,7 @@ export class DynamodbConstruct extends Construct {
       this,
       'chatCommerceTable',
       {
+        tableName: "chat_commerce_db",
         partitionKey: {
           name: 'SessionId',
           type: aws_dynamodb.AttributeType.STRING,

@@ -59,7 +59,7 @@ export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output t
 export REPOSITORY_NAME=chat-commerce-app
 export REGISTRY_NAME=$AWS_ACCOUNT_ID.dkr.ecr.ap-northeast-1.amazonaws.com
 export COMMIT_HASH=$(git rev-parse --short HEAD)
-docker buildx build \
+docker buildx build --no-cache \
   --platform=linux/x86_64 \
   -t $COMMIT_HASH \
   -f Dockerfile.server .
@@ -75,6 +75,12 @@ docker push "$AWS_ACCOUNT_ID.dkr.ecr.ap-northeast-1.amazonaws.com/$REPOSITORY_NA
 
 ```bash
 pnpm cdk deploy \
+  -c environment=dev \
+  -c imageTag=$COMMIT_HASH \
+  dev-chat-commerce-infra-stack
+
+# 削除
+pnpm cdk destroy \
   -c environment=dev \
   -c imageTag=$COMMIT_HASH \
   dev-chat-commerce-infra-stack
