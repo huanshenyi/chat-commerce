@@ -8,7 +8,7 @@ import { aws_ecs as ecs } from 'aws-cdk-lib'
 import { aws_logs as logs } from 'aws-cdk-lib'
 import { aws_ecr as ecr } from 'aws-cdk-lib'
 import { aws_wafv2 as wafv2 } from 'aws-cdk-lib'
-// import type { aws_secretsmanager as secretsmanager } from 'aws-cdk-lib'
+import { aws_secretsmanager as secretsmanager } from 'aws-cdk-lib'
 // import type { aws_cognito as cognito } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 
@@ -116,6 +116,15 @@ export class EcsConstruct extends Construct {
       },
     )
 
+    const secret = new secretsmanager.Secret(this, `${id}-AppSecret`, {
+      secretName: `${props.envName}/${props.projectName}/secret`,
+      generateSecretString: {
+        secretStringTemplate: JSON.stringify({ API_KEY: '' }),
+        generateStringKey: 'API_KEY',
+      },
+    });
+    secret.grantRead(serviceTaskDefinition.taskRole);
+
     const logGroup = new logs.LogGroup(this, `${id}-ServiceLogGroup`, {
       retention: logs.RetentionDays.THREE_MONTHS,
       removalPolicy: cdk.RemovalPolicy.RETAIN,
@@ -138,22 +147,23 @@ export class EcsConstruct extends Construct {
           streamPrefix: `samplePrefixName`,
           logGroup,
         }),
-        // secrets: {
-        //   DB_HOST: ecs.Secret.fromSecretsManager(props.dbRootSecret, 'host'),
-        //   DB_DBNAME: ecs.Secret.fromSecretsManager(
-        //     props.dbRootSecret,
-        //     'dbname',
-        //   ),
-        //   // ユーザー名とパスワードは、別途手動作成したものを利用
-        //   DB_USERNAME: ecs.Secret.fromSecretsManager(
-        //     props.dbRootSecret,
-        //     'username',
-        //   ),
-        //   DB_PASSWORD: ecs.Secret.fromSecretsManager(
-        //     props.dbRootSecret,
-        //     'password',
-        //   ),
-        // },
+        secrets: {
+          API_KEY: ecs.Secret.fromSecretsManager(secret, 'API_KEY'),
+          // DB_HOST: ecs.Secret.fromSecretsManager(props.dbRootSecret, 'host'),
+          // DB_DBNAME: ecs.Secret.fromSecretsManager(
+          //   props.dbRootSecret,
+          //   'dbname',
+          // ),
+          // // ユーザー名とパスワードは、別途手動作成したものを利用
+          // DB_USERNAME: ecs.Secret.fromSecretsManager(
+          //   props.dbRootSecret,
+          //   'username',
+          // ),
+          // DB_PASSWORD: ecs.Secret.fromSecretsManager(
+          //   props.dbRootSecret,
+          //   'password',
+          // ),
+        },
         // environment: {
         //   COGNITO_USERPOOL_ID: props.userPool.userPoolId,
         //   COGNITO_CLIENT_ID: props.userPoolClient.userPoolClientId,

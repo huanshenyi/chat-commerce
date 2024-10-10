@@ -1,3 +1,5 @@
+import os
+
 # Pyhton外部モジュールのインポート
 import streamlit as st
 from langchain_aws import ChatBedrock
@@ -11,9 +13,13 @@ from langchain.chains import LLMChain
 import requests
 
 def get_weather(city_name):
-    api_key = ""
+    api_key = os.getenv("API_KEY")
     url = f"http://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={api_key}&lang=ja&units=metric"
-    response = requests.get(url)
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        return f"天気情報の取得中にエラーが発生しました: {e}"
     if response.status_code == 200:
         data = response.json()
         weather_description = data["weather"][0]["description"]
