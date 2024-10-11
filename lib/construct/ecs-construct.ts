@@ -116,7 +116,7 @@ export class EcsConstruct extends Construct {
       },
     )
 
-    const secret = secretsmanager.Secret.fromSecretNameV2(this, 'ImportedSecret', `${props.envName}/${props.projectName}/secret`);
+    const secret = secretsmanager.Secret.fromSecretNameV2(this, `${id}-AppSecret`, `${props.envName}/${props.projectName}/secret`);
     secret.grantRead(serviceTaskDefinition.taskRole);
 
     const logGroup = new logs.LogGroup(this, `${id}-ServiceLogGroup`, {
