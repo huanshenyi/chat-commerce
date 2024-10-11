@@ -1,4 +1,6 @@
 import os
+import boto3
+import json
 
 # Pyhton外部モジュールのインポート
 import streamlit as st
@@ -12,8 +14,23 @@ from langchain.chains import LLMChain
 # 外部 API 呼び出し関数を定義
 import requests
 
+def get_api_key():
+    secret_name = os.getenv("SECRET_NAME")
+    region_name = os.getenv("REGION_NAME")
+
+    session = boto3.session.Session()
+    client = session.client(service_name='secretsmanager', region_name=region_name)
+
+    try:
+        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+        secret_string = get_secret_value_response['SecretString']
+        secret = json.loads(secret_string)
+        return secret['API_KEY']
+    except Exception as e:
+        return f"シークレットの取得中にエラーが発生しました: {e}"
+
 def get_weather(city_name):
-    api_key = os.getenv("API_KEY")
+    api_key = get_api_key()
     url = f"http://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={api_key}&lang=ja&units=metric"
     try:
         response = requests.get(url)

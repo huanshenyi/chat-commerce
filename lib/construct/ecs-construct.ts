@@ -116,13 +116,7 @@ export class EcsConstruct extends Construct {
       },
     )
 
-    const secret = new secretsmanager.Secret(this, `${id}-AppSecret`, {
-      secretName: `${props.envName}/${props.projectName}/secret`,
-      generateSecretString: {
-        secretStringTemplate: JSON.stringify({ API_KEY: '' }),
-        generateStringKey: 'API_KEY',
-      },
-    });
+    const secret = secretsmanager.Secret.fromSecretNameV2(this, 'ImportedSecret', `${props.envName}/${props.projectName}/secret`);
     secret.grantRead(serviceTaskDefinition.taskRole);
 
     const logGroup = new logs.LogGroup(this, `${id}-ServiceLogGroup`, {
@@ -164,10 +158,12 @@ export class EcsConstruct extends Construct {
           //   'password',
           // ),
         },
-        // environment: {
-        //   COGNITO_USERPOOL_ID: props.userPool.userPoolId,
-        //   COGNITO_CLIENT_ID: props.userPoolClient.userPoolClientId,
-        // },
+        environment: {
+          // COGNITO_USERPOOL_ID: props.userPool.userPoolId,
+          // COGNITO_CLIENT_ID: props.userPoolClient.userPoolClientId,
+          REGION_NAME: 'ap-northeast-1',
+          SECRET_NAME: `${props.envName}/${props.projectName}/secret`
+        },
         /**
          * [AWS ECS ベストプラクティス-セキュリティ 読み取り専用のルートファイルシステムを使用する]{@link https://docs.aws.amazon.com/ja_jp/AmazonECS/latest/bestpracticesguide/security-tasks-containers.html}
          * ICASU_NOTE: readonlyRootFilesystemを有効化すると、ECS Execやミドルウェアでのコンテナのストレージ領域への書き込みが出来なくなるので以下の記事などを参考に明示的に書き込み可能なディレクトリを作成する。

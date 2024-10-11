@@ -1,5 +1,6 @@
 import * as cdk from 'aws-cdk-lib'
 import { aws_ecr as ecr } from 'aws-cdk-lib'
+import { aws_secretsmanager as secretsmanager } from 'aws-cdk-lib'
 import type { Construct } from 'constructs'
 // import { aws_events_targets as events_targets } from "aws-cdk-lib";
 
@@ -37,5 +38,14 @@ export class EcrStack extends cdk.Stack {
     // ベーシックスキャンを通知する場合設定
     // const target = new events_targets.SnsTopic(props.alarmTopic);
     // repository.onImageScanCompleted("ImageScanComplete").addTarget(target);
+
+    // --- AWS secretsmanager ---
+    new secretsmanager.Secret(this, `${id}-AppSecret`, {
+      secretName: `${props.envName}/${props.projectName}/secret`,
+      generateSecretString: {
+        secretStringTemplate: JSON.stringify({ API_KEY: '' }),
+        generateStringKey: 'API_KEY',
+      },
+    });
   }
 }
