@@ -1,0 +1,44 @@
+openapi: 3.0.0
+info:
+  title: Use cid_path date_start and date_end to trend scale data
+  version: '1.0'
+paths:
+  /get-scale-data:
+    get:
+      operationId: getTrendData
+      summary: Use cid_path, date_start, date_end to trend scale data.
+      description: >
+        By using this endpoint, you can trend sales data by specifying
+        `cid_path`, `date_end`, `date_start`. 
+      parameters:
+        - name: cid_path
+          in: path
+          description: value taken using action to obtain cid_path
+          required: true
+          example: "1#0@1#562637@1#502823@1#100183@"
+          schema:
+            type: string
+        - name: date_end
+          in: path
+          description: date_end is the end of the data interval you want to retrieve
+          required: true
+          example: "2024-10"
+          schema:
+            type: string
+        - name: date_start
+          in: path
+          description: date_start is the start of the data interval you want to obtain
+          required: true
+          example: "2023-10"
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    type: string

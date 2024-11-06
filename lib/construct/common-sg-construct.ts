@@ -39,7 +39,7 @@ export class SecurityGroupConstruct extends Construct {
     )
     this.securityGroupForFargate.addIngressRule(
       securityGroupForAlb,
-      ec2.Port.tcp(8501),
+      ec2.Port.tcp(3000),
     )
     this.securityGroupForFargate.addEgressRule(
       ec2.Peer.anyIpv4(),
