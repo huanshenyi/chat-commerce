@@ -5,6 +5,7 @@ import { SecurityGroupConstruct } from './construct/common-sg-construct'
 import { WafConstruct } from './construct/waf-construct'
 import { DynamodbConstruct } from './construct/dynamo-db-construct'
 import { EcsConstruct } from './construct/ecs-construct'
+import { SecretsManagerConstruct } from './construct/secrets-manager-constuct'
 
 export interface InfraStackProps extends cdk.StackProps {
   vpcCidr: string
@@ -52,6 +53,11 @@ export class InfraStack extends cdk.Stack {
       envName: props.envName,
     })
 
+    const sm = new SecretsManagerConstruct(this, `${id}-secretsmanager`, {
+      projectName: props.projectName,
+      envName: props.envName,
+    })
+
     const ecs = new EcsConstruct(this, `${id}-ecs`, {
       myVpc: vpc.myVpc,
       webAcl: waf.webAcl,
@@ -71,6 +77,7 @@ export class InfraStack extends cdk.Stack {
       // userPoolClient: cognito.userPoolClient,
       envName: props.envName,
       projectName: props.projectName,
+      secrets: sm.chatCommerceSecret,
     })
 
     new cdk.CfnOutput(this, 'LOAD_BALANCER_DNS_NAME', {

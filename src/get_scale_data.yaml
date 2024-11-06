@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: Use cid_path date_start and date_end to retrieve scale data
+  version: '1.0'
+paths:
+  /get-scale-data:
+    get:
+      operationId: getScaleData
+      summary: Use cid_path, date_start, date_end, and segment_type to retrieve scale data.
+      description: >
+        By using this endpoint, you can retrieve sales data by specifying
+        `cid_path`, `date_end`, `date_start`, and `segment_type`. The `segment_type` 
+        has four options: `category`, `gender`, `maker`, and `brand`, which 
+        correspond to each genre, each gender, Top 20 makers, and Top 20 brands 
+        respectively, Use segment_type as an item when obtaining detailed rankings of popular products.
+      parameters:
+        - name: cid_path
+          in: path
+          description: value taken using action to obtain cid_path
+          required: true
+          example: "1#0@1#562637@1#502823@1#100183@"
+          schema:
+            type: string
+        - name: date_end
+          in: path
+          description: date_end is the end of the data interval you want to retrieve
+          required: true
+          example: "2024-10"
+          schema:
+            type: string
+        - name: date_start
+          in: path
+          description: date_start is the start of the data interval you want to obtain
+          required: true
+          example: "2023-10"
+          schema:
+            type: string
+        - name: segment_type
+          in: path
+          description: 4 types to choose from category, gender, maker, brand, item
+          required: true
+          example: "category"
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    type: string
